@@ -10,27 +10,44 @@
             background-color: #f0f0f0;
             padding: 20px;
             text-align: center;
+            display: flex; /* Use flex to align horizontally */
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
         }
-
+        .header-section {
+            background-color: #333;
+            color: white;
+            padding: 10px 0;
+            width: 100%;
+            text-align: left;
+        }
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+        .header-content p {
+            margin: 0;
+        }
         h1 {
             margin-bottom: 20px;
         }
-
         form {
             display: flex;
             flex-direction: column;
-            align-items: center;
+            align-items: flex-start; /* Align form items to the left */
             width: 300px;
             margin: 0 auto;
         }
-
         label {
             margin-bottom: 5px;
             display: block;
             text-align: left;
             width: 100%;
         }
-
         input[type="text"],
         input[type="datetime-local"],
         select {
@@ -41,7 +58,6 @@
             border: 1px solid #ccc;
             box-sizing: border-box;
         }
-
         button {
             padding: 10px 20px;
             border: none;
@@ -50,75 +66,59 @@
             color: white;
             cursor: pointer;
         }
-
         button:hover {
             background-color: #0056b3;
         }
-
+        .container {
+            display: flex;
+            justify-content: flex-end;
+            width: 100%;
+            align-items: flex-start;
+        }
         .room {
+            flex: 1;
             display: flex;
             flex-wrap: wrap;
-            justify-content: space-between;
+            justify-content: flex-end; /* Align the bed layout to the right */
+            margin-right: 20px; /* Add margin for spacing */
         }
-
         .bed {
             background-color: white;
             border: 1px solid #ccc;
             box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
             padding: 20px;
             margin: 10px;
-            width: calc(50% - 20px); /* Two columns, each taking 50% width with margin */
-            box-sizing: border-box; /* Adjust box-sizing to account for padding and borders */
+            width: calc(50% - 20px);
+            box-sizing: border-box;
+            cursor: pointer;
         }
-        .admission-form {
+        .admission-container {
+            display: flex;
+            align-items: flex-start;
+        }
+        .admission-section {
+            max-width: 300px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
             display: none;
+            margin-right: 20px; /* Add margin for spacing */
         }
+
     </style>
 </head>
 <body>
-    <header>
-        <h1>Hospital Health Management System</h1>
-    </header>
-    <div class="container">
-        <h2>Inpatient Room</h2>
-        <div class="room">
-            <!-- First column -->
-            <div class="bed">
-                <h3>Bed 101</h3>
-                <button onclick="showAdmissionForm('101')">Place Patient</button>
-            </div>
-            
-            <div class="bed">
-                <h3>Bed 102</h3>
-                <button onclick="showAdmissionForm('102')">Place Patient</button>
-            </div>
-            
-            <div class="bed">
-                <h3>Bed 103</h3>
-                <button onclick="showAdmissionForm('103')">Place Patient</button>
-            </div>
-            
-            <!-- Second column -->
-            <div class="bed">
-                <h3>Bed 104</h3>
-                <button onclick="showAdmissionForm('104')">Place Patient</button>
-            </div>
-            
-            <div class="bed">
-                <h3>Bed 105</h3>
-                <button onclick="showAdmissionForm('105')">Place Patient</button>
-            </div>
-            
-            <div class="bed">
-                <h3>Bed 106</h3>
-                <button onclick="showAdmissionForm('106')">Place Patient</button>
-            </div>
-            
-            <!-- Hide any additional beds beyond the specified six -->
+    <div class="header-section">
+        <div class="header-content">
+            <p>Inpatient Room</p>
+            <p id="time"></p>
+            <p>Main Page</p>
+            <p>Logged in as: Current User</p>
         </div>
-
-        <!-- Admission Form -->
-        <div class="admission-form" id="admissionForm">
+    </div>
+    <div class="container">
+        <div class="admission-section" id="admissionSection" style="display: none;">
+            <!-- Admission form section (initially hidden) -->
             <h2>Admit Patient</h2>
             <form action="/admit_patient/" method="post">
                 {% csrf_token %}
@@ -179,13 +179,81 @@
                 <button type="submit">Admit</button>
             </form>
         </div>
+        <div class="room" onclick="toggleAdmissionForm()">
+            <!-- Bed layout section (clickable entire section) -->
+            <!-- Bed 101 -->
+            <div class="bed">
+                <h3>Bed 101</h3>
+                <!-- Other bed details -->
+            </div>
+            
+            <!-- Bed 102 -->
+            <div class="bed">
+                <h3>Bed 102</h3>
+                <!-- Other bed details -->
+            </div>
+            
+            <!-- Bed 103 -->
+            <div class="bed">
+                <h3>Bed 103</h3>
+                <!-- Other bed details -->
+            </div>
+            
+            <!-- Bed 104 -->
+            <div class="bed">
+                <h3>Bed 104</h3>
+                <!-- Other bed details -->
+            </div>
+            
+            <!-- Bed 105 -->
+            <div class="bed">
+                <h3>Bed 105</h3>
+                <!-- Other bed details -->
+            </div>
+            
+            <!-- Bed 106 -->
+            <div class="bed">
+                <h3>Bed 106</h3>
+                <!-- Other bed details -->
+            </div>
+            
+            <!-- Add more beds as needed -->
+        </div>
+        
+        <button onclick="toggleAdmissionForm()">Admit Patient</button>
 
-    <script>
-        // JavaScript function to show admission form for a specific bed
-        function showAdmissionForm(bedNumber) {
-            document.getElementById('admissionForm').style.display = 'block';
-            document.getElementById('bedNumber').value = bedNumber;
-        }
-    </script>
+        <script>
+            // Function to toggle visibility of admission form section
+            function toggleAdmissionForm() {
+                var admissionSection = document.getElementById("admissionSection");
+                if (admissionSection.style.display === "none") {
+                    admissionSection.style.display = "block";
+                } else {
+                    admissionSection.style.display = "none";
+                }
+            }
+            function updateTime() {
+                var today = new Date();
+                var hours = today.getHours();
+                var minutes = today.getMinutes();
+                var seconds = today.getSeconds();
+
+                hours = checkTime(hours);
+                minutes = checkTime(minutes);
+                seconds = checkTime(seconds);
+
+                document.getElementById('time').innerHTML =
+                    hours + ":" + minutes + ":" + seconds;
+                var t = setTimeout(updateTime, 1000);
+            }
+
+            function checkTime(i) {
+                if (i < 10) { i = "0" + i };  // Add zero in front of numbers < 10
+                return i;
+            }
+
+            // Call updateTime function to start displaying the time
+            updateTime();                   
+        </script>
 </body>
 </html>
