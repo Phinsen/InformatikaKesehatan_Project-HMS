@@ -31,7 +31,7 @@ class Patient_Base(models.Model):
         # Add other insurance choices
     ]
 
-    admission_number = models.CharField(max_length=50)  # Admission Number
+    admission_number = models.CharField(max_length=50, unique=True)  # Admission Number
     last_name = models.CharField(max_length=100)  # Last Name
     first_name = models.CharField(max_length=100)  # First Name
     date_of_birth = models.DateTimeField()  # Date of Birth
@@ -61,3 +61,23 @@ class Patient_Base(models.Model):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} - {self.admission_number}"  # Display patient's name and admission number
+
+class Patient_General(models.Model):
+    admission_number = models.CharField(max_length=20, blank=True, null=True)
+    street = models.CharField(max_length=100, blank=True, null=True)
+    zip_code = models.CharField(max_length=20, blank=True, null=True)
+    city = models.CharField(max_length=50, blank=True, null=True)
+    country = models.CharField(max_length=50, blank=True, null=True)
+    phone = models.CharField(max_length=20, blank=True, null=True)
+    patient_number = models.CharField(max_length=20, blank=True, null=True)
+
+class Patient_ReferencePerson(models.Model):
+    admission_number = models.CharField(max_length=20, blank=True, null=True)
+    last_name = models.CharField(max_length=50, blank=True, null=True)
+    first_name = models.CharField(max_length=50, blank=True, null=True)
+    street = models.CharField(max_length=100, blank=True, null=True)
+    zip_code = models.CharField(max_length=20, blank=True, null=True)
+    city = models.CharField(max_length=50, blank=True, null=True)
+    country = models.CharField(max_length=50, blank=True, null=True)
+    phone = models.CharField(max_length=20, blank=True, null=True)
+    relationship_with_patient = models.CharField(max_length=100, blank=True, null=True)

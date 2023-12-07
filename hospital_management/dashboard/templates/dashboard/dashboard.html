@@ -69,6 +69,9 @@
         button:hover {
             background-color: #0056b3;
         }
+        button.cancel {
+            background-color: red;
+        }
         .container {
             display: flex;
             justify-content: flex-end;
@@ -129,8 +132,8 @@
                 First Name: <input type="text" name="first_name" required><br><br>
                 Date of Birth: <input type="datetime-local" name="date_of_birth" required><br><br>
                 Gestational Week: <input type="text" name="gestational_week" required><br><br>
-                Size: <input type="number" name="size" required><br><br>
-                Weight: <input type="number" name="weight" required><br><br>
+                Size (cm): <input type="number" name="size" required><br><br>
+                Weight (kg): <input type="number" name="weight" required><br><br>
                 Gender:
                 <select name="gender" required>
                     <option value="male">Male</option>
@@ -179,40 +182,41 @@
                 <button type="submit">Admit</button>
             </form>
         </div>
-        <div class="room" onclick="toggleAdmissionForm()">
+        <div class="room" id="roomContainer">
             <!-- Bed layout section (clickable entire section) -->
             <!-- Bed 101 -->
-            <div class="bed">
+            <div class="bed" onclick="fillBedNumber('101')">
                 <h3>Bed 101</h3>
                 <!-- Other bed details -->
             </div>
+
             
             <!-- Bed 102 -->
-            <div class="bed">
+            <div class="bed" onclick="fillBedNumber('102')">
                 <h3>Bed 102</h3>
                 <!-- Other bed details -->
             </div>
             
             <!-- Bed 103 -->
-            <div class="bed">
+            <div class="bed" onclick="fillBedNumber('103')">
                 <h3>Bed 103</h3>
                 <!-- Other bed details -->
             </div>
             
             <!-- Bed 104 -->
-            <div class="bed">
+            <div class="bed" onclick="fillBedNumber('104')">
                 <h3>Bed 104</h3>
                 <!-- Other bed details -->
             </div>
             
             <!-- Bed 105 -->
-            <div class="bed">
+            <div class="bed" onclick="fillBedNumber('105')">
                 <h3>Bed 105</h3>
                 <!-- Other bed details -->
             </div>
             
             <!-- Bed 106 -->
-            <div class="bed">
+            <div class="bed" onclick="fillBedNumber('106')">
                 <h3>Bed 106</h3>
                 <!-- Other bed details -->
             </div>
@@ -220,17 +224,35 @@
             <!-- Add more beds as needed -->
         </div>
         
-        <button onclick="toggleAdmissionForm()">Admit Patient</button>
+        <button id="admissionButton" onclick="toggleAdmissionForm()">Admit Patient</button>
 
         <script>
             // Function to toggle visibility of admission form section
-            function toggleAdmissionForm() {
+            function toggleAdmissionForm(bedNumber) {
                 var admissionSection = document.getElementById("admissionSection");
+                var admissionButton = document.getElementById("admissionButton");
+                var bedButton = document.querySelectorAll(".bed");
+
                 if (admissionSection.style.display === "none") {
                     admissionSection.style.display = "block";
+                    admissionButton.innerText = "Cancel Patient";
+                    admissionButton.classList.add("cancel"); // Add the 'cancel' class to change button style
+                    bedButton.forEach(function (bed) {
+                        bed.style.pointerEvents = "auto"; // Enable bed buttons
+                    });
+                    document.getElementById('bedNumber').value = bedNumber; // Fill bed number
                 } else {
                     admissionSection.style.display = "none";
+                    admissionButton.innerText = "Admit Patient";
+                    admissionButton.classList.remove("cancel"); // Remove the 'cancel' class to revert button style
+                    bedButton.forEach(function (bed) {
+                        bed.style.pointerEvents = "none"; // Disable bed buttons
+                    });
+                    document.getElementById('bedNumber').value = ''; // Clear bed number
                 }
+            }
+            function fillBedNumber(bedNumber) {
+                document.getElementById('bedNumber').value = bedNumber;
             }
             function updateTime() {
                 var today = new Date();
