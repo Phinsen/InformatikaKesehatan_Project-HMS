@@ -14,8 +14,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Patient_Base',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('admission_number', models.CharField(max_length=50)),
+                ('admission_number', models.CharField(primary_key=True, max_length=50)),
                 ('last_name', models.CharField(max_length=100)),
                 ('first_name', models.CharField(max_length=100)),
                 ('date_of_birth', models.DateTimeField()),

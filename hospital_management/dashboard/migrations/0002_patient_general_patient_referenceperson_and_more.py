@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
             name='Patient_General',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('admission_number', models.CharField(blank=True, max_length=20, null=True)),
+                ('admission_number', models.ForeignKey(blank=True, max_length=20, to='dashboard.patient_base', on_delete=models.deletion.CASCADE)),
                 ('street', models.CharField(blank=True, max_length=100, null=True)),
                 ('zip_code', models.CharField(blank=True, max_length=20, null=True)),
                 ('city', models.CharField(blank=True, max_length=50, null=True)),
@@ -27,7 +27,7 @@ class Migration(migrations.Migration):
             name='Patient_ReferencePerson',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('admission_number', models.CharField(blank=True, max_length=20, null=True)),
+                ('admission_number', models.ForeignKey(blank=True, max_length=20, to='dashboard.patient_base', on_delete=models.deletion.CASCADE)),
                 ('last_name', models.CharField(blank=True, max_length=50, null=True)),
                 ('first_name', models.CharField(blank=True, max_length=50, null=True)),
                 ('street', models.CharField(blank=True, max_length=100, null=True)),
@@ -37,10 +37,5 @@ class Migration(migrations.Migration):
                 ('phone', models.CharField(blank=True, max_length=20, null=True)),
                 ('relationship_with_patient', models.CharField(blank=True, max_length=100, null=True)),
             ],
-        ),
-        migrations.AlterField(
-            model_name='patient_base',
-            name='admission_number',
-            field=models.CharField(max_length=50, unique=True),
         ),
     ]

@@ -66,14 +66,6 @@
             color: white;
             cursor: pointer;
         }
-        button[disabled] {
-            background-color: #444444; /* Change background color for disabled state */
-            color: #666; /* Change text color for disabled state */
-            border: 1px solid #999; /* Add a border for disabled state */
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a sunken effect */
-            pointer-events: none;
-            /* You can add more styles as needed */
-        }
         button:hover {
             background-color: #0056b3;
         }
@@ -94,7 +86,7 @@
             margin-right: 20px; /* Add margin for spacing */
         }
         .bed {
-            background-color: rgb(0, 0, 0);
+            background-color: white;
             border: 1px solid #ccc;
             box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
             padding: 20px;
@@ -102,10 +94,6 @@
             width: calc(50% - 20px);
             box-sizing: border-box;
             cursor: pointer;
-            transition: background-color 0.3s ease; /* Smooth transition effect */
-        }
-        button.bed:hover {
-            background-color: #f0f0f0; /* Change background color on hover */
         }
         .admission-container {
             display: flex;
@@ -118,41 +106,6 @@
             border-radius: 5px;
             display: none;
             margin-right: 20px; /* Add margin for spacing */
-        }
-        .modal {
-            display: none; /* Hidden by default */
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.4);
-        }
-
-        /* Modal content */
-        .modal-content {
-            background-color: #fefefe;
-            margin: 10% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 50%;
-        }
-
-        /* Close button */
-        .close {
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .close:hover,
-        .close:focus {
-            color: #000;
-            text-decoration: none;
-            cursor: pointer;
         }
 
     </style>
@@ -170,16 +123,11 @@
         <div class="admission-section" id="admissionSection" style="display: none;">
             <!-- Admission form section (initially hidden) -->
             <h2>Admit Patient</h2>
-            <form id="bed_occupancy" action="/admit_patient_bed/" method="post">
+            <form id="admit_patient" action="{% url 'admit_patient' %}" method="post">
                 {% csrf_token %}
                 Bed: <input type="text" id="bedNumber" name="bed_number" readonly><br><br>
-                <input type="text" name="occupied" id="occupied" value="false" style="display: none;" readonly>
-                <input type="datetime-local" name="occupied_since" id="occupied_since" value="2023-12-16T00:00" style="display: none;" readonly>
-                <input type="text" name="admission_number" id="admissionNumber" value="0" style="display: none;" readonly>
-            </form>
-            
-            <form id="admit_patient_base" action="/admit_patient_base/" method="post">
-                {% csrf_token %}
+                <input type="text" name="admission_number" id="admissionNumber" style="display: none;" readonly>
+
                 Admission Number: <input type="text" name="admission_number" required><br><br>
                 Last Name: <input type="text" name="last_name" required><br><br>
                 First Name: <input type="text" name="first_name" required><br><br>
@@ -233,101 +181,124 @@
                     <option value="insurance2">Insurance 2</option>
                     <!-- Add other health insurance options -->
                 </select><br><br>
+                <button type="submit">Submit</button>
             </form>
-            <button id="submitAllForms" onclick="submitAll()">Submit</button>  
+            
         </div>
         <div class="room" id="roomContainer">
             <!-- Bed layout section (clickable entire section) -->
-            {% for bed in bed_occupancy_data %}
-                <button class="bed" onclick="fillBedNumber('{{ bed.bed_number }}')" {% if bed.occupied %} disabled {% endif %}>
-                    {{ bed.bed_number }} - {% if bed.occupied %} Occupied {% else %} Vacant {% endif %} - {{bed.admission_number}}
-                </button>
-            {% endfor %}
-            <table border="1">
-                <thead>
-                    <tr>
-                        <th>Admission Number</th>
-                        <th>Full Name</th>
-                        <th>Admission in Department</th>
-                        <th>Admission in Hospital</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for patient in patient_data %}
-                        <tr>
-                            <td>{{ patient.admission_number }}</td>
-                            <td>{{ patient.first_name }} {{ patient.last_name }}</td>
-                            <td>{{ patient.admission_in_department }}</td>
-                            <td>{{ patient.admission_in_hospital }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            <div id="submissionStatus"></div>   
-        </div>
-        
-        
-        <button id="admissionButton" onclick="toggleAdmissionForm()">Admit Patient</button> <br><br>
-        <button id="transferPatient" onclick="openModal()">Transfer Patient</button>
-        
-        <div id="myModal" class="modal">
-            <!-- Modal content -->
-            <div class="modal-content">
-                <span class="close" onclick="closeModal()">&times;</span>
-                <h2>Transfer Patient</h2>
-                <form>
-                    <label for="patient">Select Patient:</label>
-                    <select id="patient" name="patient">
-                        <!-- Populate this dropdown with patient options -->
-                        {% for patient in patient_data %}
-                        <option value={{patient.admission_number}} {{patient.last_name}}></option>
-                        {% endfor %}
-                        <!-- Add other patient options dynamically based on your data -->
-                    </select>
-                    <br><br>
-                    <label for="bed">Select Bed:</label>
-                    <select id="bed" name="bed">
-                        <!-- Populate this dropdown with available bed options -->
-                        <option value="bed101">Bed 101</option>
-                        <option value="bed102">Bed 102</option>
-                        <!-- Add other bed options dynamically based on availability -->
-                    </select>
-                    <br><br>
-                    <input type="submit" value="Admit">
-                </form>
+            <!-- Bed 101 -->
+            <div class="bed" onclick="fillBedNumber('101')">
+                <h3>Bed 101</h3>
+                <!-- Other bed details -->
             </div>
+
+            
+            <!-- Bed 102 -->
+            <div class="bed" onclick="fillBedNumber('102')">
+                <h3>Bed 102</h3>
+                <!-- Other bed details -->
+            </div>
+            
+            <!-- Bed 103 -->
+            <div class="bed" onclick="fillBedNumber('103')">
+                <h3>Bed 103</h3>
+                <!-- Other bed details -->
+            </div>
+            
+            <!-- Bed 104 -->
+            <div class="bed" onclick="fillBedNumber('104')">
+                <h3>Bed 104</h3>
+                <!-- Other bed details -->
+            </div>
+            
+            <!-- Bed 105 -->
+            <div class="bed" onclick="fillBedNumber('105')">
+                <h3>Bed 105</h3>
+                <!-- Other bed details -->
+            </div>
+            
+            <!-- Bed 106 -->
+            <div class="bed" onclick="fillBedNumber('106')">
+                <h3>Bed 106</h3>
+                <!-- Other bed details -->
+            </div>
+            
+            <!-- Add more beds as needed -->
         </div>
         
+        <button id="admissionButton" onclick="toggleAdmissionForm()">Admit Patient</button>
 
-        {% load static %}
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script src="{% static 'dashboard/scripts.js' %}"></script>
         <script>
-            // Get the modal
-            var modal = document.getElementById('myModal');
-        
-            // Get the button that opens the modal
-            var btn = document.getElementsByTagName("button")[0];
-        
-            // Get the <span> element that closes the modal
-            var span = document.getElementsByClassName("close")[0];
-        
-            // When the user clicks the button, open the modal
-            function openModal() {
-                modal.style.display = "block";
-            }
-        
-            // When the user clicks on <span> (x), close the modal
-            function closeModal() {
-                modal.style.display = "none";
-            }
-        
-            // When the user clicks anywhere outside of the modal, close it
-            window.onclick = function(event) {
-                if (event.target == modal) {
-                    modal.style.display = "none";
+            // Function to toggle visibility of admission form section
+            function toggleAdmissionForm(bedNumber) {
+                var admissionSection = document.getElementById("admissionSection");
+                var admissionButton = document.getElementById("admissionButton");
+                var bedButton = document.querySelectorAll(".bed");
+
+                if (admissionSection.style.display == "none") {
+                    admissionSection.style.display = "block";
+                    admissionButton.innerText = "Cancel Patient";
+                    admissionButton.classList.add("cancel"); // Add the 'cancel' class to change button style
+                    bedButton.forEach(function (bed) {
+                        bed.style.pointerEvents = "auto"; // Enable bed buttons
+                    });
+                    document.getElementById('bedNumber').value = bedNumber; // Fill bed number
+                } else {
+                    admissionSection.style.display = "none";
+                    admissionButton.innerText = "Admit Patient";
+                    admissionButton.classList.remove("cancel"); // Remove the 'cancel' class to revert button style
+                    bedButton.forEach(function (bed) {
+                        bed.style.pointerEvents = "none"; // Disable bed buttons
+                    });
+                    document.getElementById('bedNumber').value = ''; // Clear bed number
                 }
             }
+            function fillBedNumber(bedNumber) {
+                document.getElementById('bedNumber').value = bedNumber;
+            }
+            function updateTime() {
+                var today = new Date();
+                var hours = today.getHours();
+                var minutes = today.getMinutes();
+                var seconds = today.getSeconds();
+
+                hours = checkTime(hours);
+                minutes = checkTime(minutes);
+                seconds = checkTime(seconds);
+
+                document.getElementById('time').innerHTML =
+                    hours + ":" + minutes + ":" + seconds;
+                var t = setTimeout(updateTime, 1000);
+            }
+
+            function checkTime(i) {
+                if (i < 10) { i = "0" + i };  // Add zero in front of numbers < 10
+                return i;
+            }
+            function calculateBMI() {
+                // Get values of size and weight entered by the user
+                var size = parseFloat(document.getElementById('sizeCm').value);
+                var weight = parseFloat(document.getElementById('weightKg').value);
+
+                // Calculate BMI (formula: weight(kg) / (size(m) * size(m)))
+                var bmi = (weight / (size/100 * size/100)).toFixed(2);
+                var bsa = (0.007184 * (size**0.725) * (weight**0.425)).toFixed(2);
+
+                // Display the calculated BMI in the input field with id 'bmi'
+                document.getElementById('bmi').value = bmi;
+                document.getElementById('bsa').value = bsa;
+            }
+
+            // Attach the calculateBMI function to 'input' event of size and weight fields
+            document.getElementById('sizeCm').addEventListener('input', calculateBMI);
+            document.getElementById('weightKg').addEventListener('input', calculateBMI);
+
+            // Calculate BMI initially if size and weight are pre-filled
+            calculateBMI();
+
+            // Call updateTime function to start displaying the time
+            updateTime();                   
         </script>
 </body>
 </html>
